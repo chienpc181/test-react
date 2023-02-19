@@ -2,6 +2,9 @@
 import Client from "../Auth";
 import axios from "axios";
 import { ModelSummaryExtension } from "../extensions/modelsummaryextension";
+import { SensorListExtension } from "../extensions/sensorListExtension";
+// import { SensorDetailExtension } from "../extensions/SensorDetailExtension";
+
 
 var getToken = {accessToken: Client.getAccessToken()}
 var viewer;
@@ -15,7 +18,7 @@ function launchViewer(div, urn){
         Autodesk.Viewing.Initializer(options, () => {
             var htmlDiv = document.getElementById(div);
             var optViews = {
-                extensions: ['ModelSummaryExtension'],
+                extensions: ['ModelSummaryExtension', 'SensorListExtension'],
             }
             viewer = new Autodesk.Viewing.GuiViewer3D(htmlDiv, optViews);
             var startedCode = viewer.start();
@@ -39,7 +42,7 @@ function launchViewer(div, urn){
         function onDocumentLoadFailure() {
             console.error('Failed fetching Forge manifest');
         }
-
+        
     })
 }
 

@@ -24,6 +24,10 @@
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "@types/chart.js": "^2.9.35",
+    "@types/forge-viewer": "^7.61.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -12,7 +12,6 @@ class Viewer extends Component {
     render(){
         return(
             <div>
-                <p>test viewer</p>
                 <div style={{ position: "absolute", width: "100%", height: "85%" }} id="viewerDiv" />
             </div>
            
