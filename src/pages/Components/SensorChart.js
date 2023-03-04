@@ -6,16 +6,17 @@ import {
     PointElement,
     LineElement,
     Title,
+    SubTitle,
     Tooltip,
     Legend,
 } from 'chart.js';
-import { red } from "@mui/material/colors";
 
 ChartJS.register(CategoryScale);
 ChartJS.register(LinearScale);
 ChartJS.register(PointElement);
 ChartJS.register(LineElement);
 ChartJS.register(Title);
+ChartJS.register(SubTitle);
 ChartJS.register(Tooltip);
 ChartJS.register(Legend);
 
@@ -31,7 +32,7 @@ function SensorChart(props) {
                 data: props.data,
                 // borderColor: 'rgb(75, 192, 192)',
                 borderColor: props.color,
-                fill: false,
+                fill: true,
             },
         ],
     };
@@ -41,11 +42,31 @@ function SensorChart(props) {
         plugins: {
             legend: {
                 position: 'top',
+                display: false
             },
             title: {
                 display: true,
-                // text: 'Last 10 days'
-                text: props.title
+                text: props.title,
+                color: "white",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 20,
+                },
+                // align: 'start'
+            },
+            subtitle: {
+                display: true,
+                text: "Max at: " + props.maxAt,
+                color: props.color,
+                font: {
+                    size: 12
+                },
+                padding: {
+                    bottom: 20,
+                },
+                align: 'end'
             }
         }
     };

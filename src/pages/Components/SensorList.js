@@ -66,7 +66,7 @@ function SensorList() {
                 <div className="sensor-detail">Vibration: {item.lastValue.Vibration}</div>
                 <div className="sensor-detail">Update: {item.lastValue.LastUpdate}</div>
             </div> */}
-            <SensorChart title={item.Name} label="Loudness" data={item.chart.data} labels={item.chart.labels} color="yellow"/>
+            <SensorChart title={item.Name} label="Loudness" data={item.chart.data} labels={item.chart.labels} maxAt={item.chart.maxAt} color="yellow"/>
         </div>
 
     ));

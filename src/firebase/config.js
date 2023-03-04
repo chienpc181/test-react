@@ -58,7 +58,7 @@ const firebaseConfig = {
 export const queryLast10MaxValues = async (sensorDatabaseName) => {
   const maxValues = [];
   const today = new Date();
-  for (let i = 0; i < 10; i++) {
+  for (let i = 9; i >= 0; i--) {
     const date = new Date(today); 
     date.setDate(today.getDate() - i);
     const maxValue = await getMaxValueByDate(sensorDatabaseName, date, "Loudness");
@@ -73,7 +73,6 @@ export const getChartLast10 = async (sensorDatabaseName) => {
   const values = maxValues.map(max => max.value);
   const maxValue = Math.max(...values);
   const indexMax = values.indexOf(maxValue);
-  // console.log(maxValues.map(max => max.time));
   return {
     data: values,
     labels: maxValues.map(max => formatDatetime(max.time)),
