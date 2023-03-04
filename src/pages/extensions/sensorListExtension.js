@@ -1,6 +1,7 @@
 /* global Autodesk, THREE */
 import { querySensor1 } from "../../firebase/config";
 import { SensorListPanel } from "./SensorListPanel";
+import { TestListPanel } from "./TestListPanel";
 
 export class SensorListExtension extends Autodesk.Viewing.Extension {
     constructor(viewer, options) {
@@ -14,6 +15,13 @@ export class SensorListExtension extends Autodesk.Viewing.Extension {
             this.loadScript('https://unpkg.com/tabulator-tables@5.1.7/dist/js/tabulator.min.js', 'Tabulator'),
             this.loadStylesheet('https://unpkg.com/tabulator-tables@5.1.7/dist/css/tabulator_midnight.min.css')
         ]);
+        
+        // const testListPanel = document.getElementById("testList");
+        // if(testListPanel == null){
+        //     this.testListPanel = new TestListPanel(this.viewer, this.viewer.container, 'testList', 'Test list');
+        //     this.testListPanel.setVisible(true);
+        // }
+
         
         console.log('SensorListExtension has been loaded');
         return true;
@@ -53,15 +61,7 @@ export class SensorListExtension extends Autodesk.Viewing.Extension {
             // If panel is NOT visible, exit the function
             if (!this._panel.isVisible())
                 return;
-                // const sensors = await querySensor1();
-                // // const sensors = [{id: 1, name: 'Sensor 1', airQuality: 0, dust: 0.1, loudness: 56},{id: 2, name: 'Sensor 1', airQuality: 0, dust: 0.11, loudness: 56},{id: 3, name: 'Sensor 1', airQuality: 10, dust: 10.1, loudness: 156}];
-                // sensors.forEach((sensor) => {
-                //     this._panel.addProperty("Air quality", sensor.AirQuality, sensor.id);
-                //     this._panel.addProperty("Dust", sensor.Dust, sensor.id);
-                //     this._panel.addProperty("Loudness", sensor.Loudness, sensor.id);
-                //     this._panel.addProperty("Vibration", sensor.Vibration, sensor.id);
-                //     this._panel.addProperty("Time", sensor.Time, sensor.id);
-                // })
+
 
 
 

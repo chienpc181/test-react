@@ -2,14 +2,14 @@ import React, {Component} from "react";
 import {AppBar, Toolbar, Typography, IconButton, Button} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Viewer from "./Viewer/Viewer";
+import SensorList from "./Components/SensorList";
 // import {DataChart, ChronosTimeSlider} from 'forge-dataviz-iot-react-components';
 
-const Home = () => {
+function Home() {
     
-
     return (
-        <div className="viewer-home">
-            <AppBar position="static" >
+        <div className="" >
+            {/* <AppBar position="static" >
                 <Toolbar>
                     <IconButton
                         size="large"
@@ -25,10 +25,18 @@ const Home = () => {
                     </Typography>
                     <Button color="inherit" >Login</Button>
                 </Toolbar>
-            </AppBar>
-            <Viewer/>
+            </AppBar> */}
+            <div className="" style={{position: "absolute", width: "70%", height: "100%"}}>
+                <Viewer/>
+            </div>
+            {/* <div className="sensor-list" style={{position: "absolute", width: "20%", height: "100%", marginLeft: "80%"}}>
+                <SensorList/>
+            </div> */}
+            <SensorList/>
+            
         </div>
     )
+    
 }
 
 export default Home;

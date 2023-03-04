@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="overflow: hidden;">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -15,7 +15,9 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.0/style.min.css" type="text/css">
+    <!-- <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.0/style.min.css" type="text/css"> -->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
+    <link rel="stylesheet" href="../src/App.css" type="text/css">
 
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
@@ -31,7 +33,7 @@
   <body>
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.0/viewer3D.min.js"></script>
 
-    <div id="root"></div>
+    <div id="root" class="container-fluid" style="padding: 0px"></div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
