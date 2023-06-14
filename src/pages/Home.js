@@ -31,8 +31,8 @@ function Home() {
 
             <div className="left-side">
                 <div className="header" id="header">
-                    <img src={logo} alt="Daces"/>
-                    <h5>Daces IoT Demo</h5>
+                    {/* <img src={logo} alt="Daces"/> */}
+                    <h5>ACU-PM</h5>
                 </div>
                 <div className="viewer">
                     <Viewer/>

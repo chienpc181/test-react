@@ -34,6 +34,7 @@ function SensorChart(props) {
                 data: props.data,
                 // borderColor: 'rgb(75, 192, 192)',
                 borderColor: props.color,
+                backgroundColor: "rgba(75,192,192,0.2)",
                 fill: true,
             },
         ],
@@ -58,17 +59,23 @@ function SensorChart(props) {
                 },
                 // align: 'start'
             },
-            subtitle: {
-                display: true,
-                text: "Max at: " + props.maxAt,
-                color: props.color,
-                font: {
-                    size: 12
-                },
-                padding: {
-                    bottom: 20,
-                },
-                align: 'end'
+            // subtitle: {
+            //     display: true,
+            //     text: "Max at: " + props.maxAt,
+            //     color: props.color,
+            //     font: {
+            //         size: 12
+            //     },
+            //     padding: {
+            //         bottom: 20,
+            //     },
+            //     align: 'end'
+            // }
+        },
+        scales: {
+            y: {
+                min: 0,
+                max: 100
             }
         }
     };
