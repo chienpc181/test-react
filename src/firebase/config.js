@@ -19,85 +19,73 @@ const firebaseConfig = {
   const db = getFirestore(app);
   
   
-  export const querySensorTest = async () => {
-    const sensor1 = collection(db, "ESP32_SensorTest");
-    const querySensor = query(sensor1, orderBy("Time", "desc"));
+export const querySensorTest = async () => {
+  const sensor1 = collection(db, "ESP32_SensorTest");
+  const querySensor = query(sensor1, orderBy("Time", "desc"));
 
-    const docSnap = await getDocs(querySensor);
-    let data = [];
-    docSnap.docs.forEach((doc) => data.push({...doc.data(), id: doc.id}));
-    return data;
-  };
+  const docSnap = await getDocs(querySensor);
+  let data = [];
+  docSnap.docs.forEach((doc) => data.push({...doc.data(), id: doc.id}));
+  return data;
+};
 
-  export const querySensorLast10 = async (sensorDatabaseName) => {
-    const dataRef = collection(db, sensorDatabaseName);
-    const querySensor = query(dataRef, orderBy("Time", "desc"), limit(10));
-    const docSnap = await getDocs(querySensor);
-    let data = [];
-    docSnap.docs.forEach((doc) => data.push({...doc.data(), id: doc.id}));
+export const querySensorLast10 = async (sensorDatabaseName) => {
+  const dataRef = collection(db, sensorDatabaseName);
+  const querySensor = query(dataRef, orderBy("Time", "desc"), limit(10));
+  const docSnap = await getDocs(querySensor);
+  let data = [];
+  docSnap.docs.forEach((doc) => data.push({...doc.data(), id: doc.id}));
 
-    return data;
-  };
+  return data;
+};
 
-  export const querySensorLastInfo = async (sensorDatabaseName) => {
-    const dataRef = collection(db, sensorDatabaseName);
-    const querySensor = query(dataRef, orderBy("Time", "desc"), limit(1));
-    const docSnap = await getDocs(querySensor);
-    let data = [];
-    docSnap.docs.forEach((doc) => data.push({...doc.data(), id: doc.id, LastUpdate: new Date(doc.data().Time.seconds*1000).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric'
-    })}));
-    return data[0];
-  };
-
-export const queryLast10MaxValues = async (sensorDatabaseName) => {
+const queryLast10MaxValues = async (sensorDatabaseName, sensorType) => {
   const maxValues = [];
   const today = new Date();
   for (let i = 9; i >= 0; i--) {
     const date = new Date(today); 
     date.setDate(today.getDate() - i);
-    const maxValue = await getMaxValueByDate(sensorDatabaseName, date, "Loudness");
+    const maxValue = await getMaxValueByDate(sensorDatabaseName, date, sensorType);
     maxValues.push(maxValue);
   }
   
   return maxValues;
 }
 
-export const getChartLast10 = async (sensorDatabaseName) => {
-  const maxValues = await queryLast10MaxValues(sensorDatabaseName);
-  const values = maxValues.map(max => max.value);
-  const maxValue = Math.max(...values);
-  const indexMax = values.indexOf(maxValue);
-  return {
-    data: values,
-    labels: maxValues.map(max => formatDatetime(max.time)),
-    maxAt: (await maxValues).map(max => max.time)[indexMax],
+
+
+const getMaxValueByDate = async (sensorDatabaseName, date, field) => {
+  const valueInDays = [];
+  for (let i = 0; i < 24; i+= 24){
+    const hourStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), i, 0, 0);
+    const hourEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), i + 23, 59, 59);
+    const hourStartTimestamp = Timestamp.fromDate(hourStart);
+    const hourEndTimestamp = Timestamp.fromDate(hourEnd);
+    const queryByHour = query(collection(db, sensorDatabaseName), where("Time", ">=", hourStartTimestamp)
+    , where("Time", "<=", hourEndTimestamp), limit(1));
+    const querySnapshot = await getDocs(queryByHour);
+    if(querySnapshot.size > 0){
+      valueInDays.push({
+        value: querySnapshot.docs[0].data()[field],
+        time: convertToDateTimeLong(hourStartTimestamp),
+      });
+    }
   }
-}
-
-export const getMaxValueByDate = async (sensorDatabaseName, date, field) => {
-  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-  const startOfDayTimestamp = Timestamp.fromDate(startOfDay);
-  const endOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-  const endOfDayTimestamp = Timestamp.fromDate(endOfDay);
-
-  const q = query(collection(db, sensorDatabaseName), where("Time", ">=", startOfDayTimestamp)
-  , where("Time", "<=", endOfDayTimestamp), orderBy("Time"), orderBy(field, "desc"), limit(1));
-
-  const querySnapshot = await getDocs(q);
-  const maxValue = querySnapshot.size > 0 ? querySnapshot.docs[0].data()[field] : 0;
-  const time = querySnapshot.size > 0 ? convertToDateTimeLong(querySnapshot.docs[0].data().Time) : convertToDateTimeLong(startOfDayTimestamp);
-  const max = {
-    value: maxValue,
-    time: time,
+  if(valueInDays.length > 0){
+    valueInDays.sort(function(a, b){
+      return b.value - a.value;
+    });
+    return {
+      value: valueInDays[0].value,
+      time: valueInDays[0].time,
+    }
   }
-
-  return max;
+  else{
+    return {
+      value: 0,
+      time: convertToDateTimeLong(Timestamp.fromDate(new Date(date.getFullYear(), date.getMonth(), date.getDate()))),
+    }
+  }
 }
 
 const formatDatetime = (datetime) => {
@@ -108,6 +96,18 @@ const formatDatetime = (datetime) => {
   }).format(new Date(datetime));
 
   return formattedDate;
+}
+
+export const getChartLast10Days = async (sensorDatabaseName, sensorType) => {
+  const maxValues = await queryLast10MaxValues(sensorDatabaseName, sensorType);
+  const values = maxValues.map(max => max.value);
+  const maxValue = Math.max(...values);
+  const indexMax = values.indexOf(maxValue);
+  return {
+    data: values,
+    labels: maxValues.map(max => formatDatetime(max.time)),
+    maxAt: maxValues.map(max => max.time)[indexMax],
+  }
 }
 
 const convertToDateTime = (timeStamp) => {
@@ -158,11 +158,8 @@ const convertToDateTimeLong = (timeStamp) => {
     const dataRef = collection(db, sensorDatabaseName);
     const querySensor = query(dataRef, orderBy("Time", "desc"), limit(1));
 
-    let docSnap = await getDocs(querySensor);
+    var docSnap = await getDocs(querySensor);
     onSnapshot(querySensor, async (snapshot) => {
-      // realtimeData = [];
-      // realtimeData.push(...snapshot.docs.map((doc) => doc.data()));
-      
       // snapshot.docs.forEach((doc) => {
       //   realtimeData.push({...doc.data(), id: doc.id});
       // });
@@ -181,9 +178,9 @@ const convertToDateTimeLong = (timeStamp) => {
 
     const newDocData = {
       AirQuality: 100,
-      Dust: 100,
-      Loudness: 100,
-      Vibration: 100,
+      Dust: 200,
+      Loudness: 300,
+      Vibration: 400,
       Time: serverTimestamp()
     }
     const newDocRef = await addDoc(dataRef, newDocData);

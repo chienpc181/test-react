@@ -9,6 +9,7 @@ import {
     SubTitle,
     Tooltip,
     Legend,
+    Filler,
 } from 'chart.js';
 
 ChartJS.register(CategoryScale);
@@ -19,6 +20,7 @@ ChartJS.register(Title);
 ChartJS.register(SubTitle);
 ChartJS.register(Tooltip);
 ChartJS.register(Legend);
+ChartJS.register(Filler);
 
 function SensorChart(props) {
     const data = {
@@ -47,7 +49,7 @@ function SensorChart(props) {
             title: {
                 display: true,
                 text: props.title,
-                color: "white",
+                color: "#D0D0D0",
                 font: {
                     size: 16
                 },

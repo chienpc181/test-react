@@ -3,12 +3,14 @@ import {AppBar, Toolbar, Typography, IconButton, Button} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Viewer from "./Viewer/Viewer";
 import SensorList from "./Components/SensorList";
+import MainBoard from "./Viewer/MainBoard";
 // import {DataChart, ChronosTimeSlider} from 'forge-dataviz-iot-react-components';
+import logo from "../Logo.png";
 
 function Home() {
     
     return (
-        <div className="" >
+        <div className="containter" >
             {/* <AppBar position="static" >
                 <Toolbar>
                     <IconButton
@@ -26,14 +28,20 @@ function Home() {
                     <Button color="inherit" >Login</Button>
                 </Toolbar>
             </AppBar> */}
-            <div className="" style={{position: "absolute", width: "70%", height: "100%"}}>
-                <Viewer/>
+
+            <div className="left-side">
+                <div className="header" id="header">
+                    <img src={logo} alt="Daces"/>
+                    <h5>Daces IoT Demo</h5>
+                </div>
+                <div className="viewer">
+                    <Viewer/>
+
+                </div>
             </div>
-            {/* <div className="sensor-list" style={{position: "absolute", width: "20%", height: "100%", marginLeft: "80%"}}>
-                <SensorList/>
-            </div> */}
-            <SensorList/>
-            
+            <div className="right-side">
+                <MainBoard/>
+            </div>
         </div>
     )
     

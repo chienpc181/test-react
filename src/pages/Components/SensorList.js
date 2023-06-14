@@ -1,89 +1,160 @@
-import React, { useState, useEffect } from "react"
-import { querySensorLastInfo, getRealtimeData, TestRealtime, getChartLast10 } from "../../firebase/config"
+import React, {Component, useState, useEffect } from "react"
+import { getChartLast10Days } from "../../firebase/config"
 import SensorChart from "./SensorChart";
 
-function SensorList() {
-    const [sensors, setSensors] = useState([
-    { Name: "Sensor Test", Id: "ESP32_SensorTest", Active: true, 
-    lastValue: {AirQuality: 0, Dust: 0, Loudness: 0, Vibration: 0, LastUpdate: ""}, chart: {data: [], labels: [], maxAt: ""} },
-    { Name: "Sensor 1", Id: "ESP32_Sensor1", Active: true, 
-    lastValue: {AirQuality: 0, Dust: 0, Loudness: 0, Vibration: 0, LastUpdate: ""}, chart: {data: [], labels: [], maxAt: ""} }, 
-    { Name: "Sensor 2", Id: "ESP32_Sensor2", Active: true, 
-    lastValue: {AirQuality: 0, Dust: 0, Loudness: 0, Vibration: 0, LastUpdate: ""}, chart: {data: [], labels: [], maxAt: ""} },
-    { Name: "Sensor 3", Id: "ESP32_Sensor3", Active: true, 
-    lastValue: {AirQuality: 0, Dust: 0, Loudness: 0, Vibration: 0, LastUpdate: ""}, chart: {data: [], labels: [], maxAt: ""}},
-    { Name: "Sensor 4", Id: "ESP32_Sensor4", Active: true, 
-    lastValue: {AirQuality: 0, Dust: 0, Loudness: 0, Vibration: 0, LastUpdate: ""}, chart: {data: [], labels: [], maxAt: ""}},
-    { Name: "Sensor 5", Id: "ESP32_Sensor5", Active: true, 
-    lastValue: {AirQuality: 0, Dust: 0, Loudness: 0, Vibration: 0, LastUpdate: ""}, chart: {data: [], labels: [], maxAt: ""}},
-    { Name: "Sensor 7", Id: "ESP32_Sensor7", Active: true, 
-    lastValue: {AirQuality: 0, Dust: 0, Loudness: 0, Vibration: 0, LastUpdate: ""}, chart: {data: [], labels: [], maxAt: ""}}
-    ]);
+// function SensorList() {
+//     const [sensors, setSensors] = useState([
+//     { Name: "Sensor Test", Id: "ESP32_SensorTest", Active: true, 
+//     chart: {data: [], labels: [], maxAt: ""} },
+//     { Name: "Sensor 1", Id: "ESP32_Sensor1", Active: true, 
+//     chart: {data: [], labels: [], maxAt: ""} }, 
+//     { Name: "Sensor 2", Id: "ESP32_Sensor2", Active: true, 
+//     chart: {data: [], labels: [], maxAt: ""} },
+//     { Name: "Sensor 3", Id: "ESP32_Sensor3", Active: true, 
+//     chart: {data: [], labels: [], maxAt: ""}},
+//     { Name: "Sensor 4", Id: "ESP32_Sensor4", Active: true, 
+//     chart: {data: [], labels: [], maxAt: ""}},
+//     { Name: "Sensor 5", Id: "ESP32_Sensor5", Active: true, 
+//     chart: {data: [], labels: [], maxAt: ""}},
+//     { Name: "Sensor 7", Id: "ESP32_Sensor7", Active: true, 
+//     chart: {data: [], labels: [], maxAt: ""}}
+//     ]);
+//     const [sensorType, setSensorType] = useState("AirQuality");
+    
+//     useEffect(() => {
+//         const fetchItems = async () => {
+//             sensors.forEach(async (sensor) => {
+//                 const chartData = await getChartLast10Days(sensor.Id, sensorType);
+//                 sensor.chart = chartData;
+//                 setSensors(sensors);
+//             });
+//         }
+//         fetchItems();
+//     }, [sensorType, sensors]);
 
-    // const [data3, setData3] = useState([]);
-    // const [labels3, setlabels3] = useState([]);
+//     const selectSensor = (event) => {
+//         setSensorType(event.target.value);
+//     }
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         let data = [];
-    //         sensors.forEach(async (sensor) => {
-    //             const info = await querySensorLastInfo(sensor.Id);
-                
-    //             data.push({ ...sensor, lastValue: info });
-    //             await setSensors(data);
-    //         })
-    //     }, 1000);
-    //     return () => clearTimeout(timer);
-    // }, []);
+//     return (
+//         <div className="sensor-list-component">
+//             {sensorType}
+//             <div className="sensor-filter">
+//                 <div>
+//                     <label>Sensor type</label>
+//                     <select className="form-select form-select-sm" onChange={selectSensor}>
+//                         <option>AirQuality</option>
+//                         <option>Dust</option>
+//                         <option>Loudness</option>
+//                         <option>Vibration</option>
+//                     </select>
+//                 </div>
+//                 <div>
+//                     <label>Level</label>
+//                     <select className="form-select form-select-sm">
+//                         <option>Ground</option>
+//                         <option>Level 1</option>
+//                         <option>Level 2</option>
+//                         <option>Roof</option>
+//                     </select>
+//                 </div>
+//             </div>
+//             <div className="sensor-list">
+//                 {
+//                     sensors.map((sensor, index) => (
+//                         <div key={index} className="sensor-list-item">
+//                             <SensorChart title={sensor.Name} label={sensorType} data={sensor.chart.data} labels={sensor.chart.labels} maxAt={sensor.chart.maxAt} color="#EBB30B"/>
+//                         </div>
+//                     ))
+//                 }
+//             </div>
+//         </div>
 
-    useEffect(() => {
-        const fetchItems = async () => {
-            let data = [];
-            sensors.forEach(async (sensor) => {
-                const info = await querySensorLastInfo(sensor.Id);
-                const chartData = await getChartLast10(sensor.Id);
-                
-                data.push({ ...sensor, lastValue: info, chart: chartData });
-                setSensors(data);
-            });
+//     )
 
-            // const airQualities3 = await getChartLast10(sensors[3].Id);
-            // setData3(airQualities3.map(max => max.value));
-            // setlabels3(airQualities3.map(max => max.time));
+// }
+
+
+
+class SensorList extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            sensors: [
+                { Name: "Sensor Test", Id: "ESP32_SensorTest", Active: true, 
+                chart: {data: [], labels: [], maxAt: ""} },
+                { Name: "Sensor 1", Id: "ESP32_Sensor1", Active: true, 
+                chart: {data: [], labels: [], maxAt: ""} }, 
+                { Name: "Sensor 2", Id: "ESP32_Sensor2", Active: true, 
+                chart: {data: [], labels: [], maxAt: ""} },
+                { Name: "Sensor 3", Id: "ESP32_Sensor3", Active: true, 
+                chart: {data: [], labels: [], maxAt: ""}},
+                { Name: "Sensor 4", Id: "ESP32_Sensor4", Active: true, 
+                chart: {data: [], labels: [], maxAt: ""}},
+                { Name: "Sensor 5", Id: "ESP32_Sensor5", Active: true, 
+                chart: {data: [], labels: [], maxAt: ""}},
+                { Name: "Sensor 7", Id: "ESP32_Sensor7", Active: true, 
+                chart: {data: [], labels: [], maxAt: ""}}
+                ],
+            sensorType: "AirQuality",
         }
-        fetchItems();
-    }, []);
+    }
+    async componentDidMount() {
+        const data = [];
+        this.state.sensors.forEach(async (sensor) => {
+            const chartData = await getChartLast10Days(sensor.Id, this.state.sensorType);
+            data.push({...sensor, chart: chartData});
+            this.setState({sensors: data});
+        });
+    }
+    
+    selectSensor = async (event) => {
+        this.setState({sensorType: event.target.value});
+        const data = [];
+        this.state.sensors.forEach(async (sensor) => {
+            const chartData = await getChartLast10Days(sensor.Id, event.target.value);
+            data.push({...sensor, chart: chartData});
+            this.setState({sensors: data});
+        });
+    }
 
-    const renderSensors = sensors.map((item, index) => (
-        <div key={index} className="sensor-list-item">
-            {/* <div className="sensor-header">
-                <h6>{item.Name}</h6>
+    render() {
+        return (
+            <div className="sensor-list-component">
+                <div className="sensor-filter">
+                    <div>
+                        <label>Sensor type</label>
+                        <select className="form-select form-select-sm" onChange={this.selectSensor}>
+                            <option>AirQuality</option>
+                            <option>Dust</option>
+                            <option>Loudness</option>
+                            <option>Vibration</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Level</label>
+                        <select className="form-select form-select-sm">
+                            <option>Ground</option>
+                            <option>Level 1</option>
+                            <option>Level 2</option>
+                            <option>Roof</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="sensor-list">
+                    {
+                        this.state.sensors.map((sensor, index) => (
+                            <div key={index} className="sensor-list-item">
+                                <SensorChart title={sensor.Name} label={this.state.sensorType} data={sensor.chart.data} labels={sensor.chart.labels} maxAt={sensor.chart.maxAt} color="#EBB30B"/>
+                            </div>
+                        ))
+                    }
+                </div>
             </div>
-            <div className="sensor-details">
-                <div className="sensor-detail">Air quality: {item.lastValue.AirQuality}</div>
-                <div className="sensor-detail">Dust: {item.lastValue.Dust}</div>
-                <div className="sensor-detail">Loudness: {item.lastValue.Loudness}</div>
-                <div className="sensor-detail">Vibration: {item.lastValue.Vibration}</div>
-                <div className="sensor-detail">Update: {item.lastValue.LastUpdate}</div>
-            </div> */}
-            <SensorChart title={item.Name} label="Loudness" data={item.chart.data} labels={item.chart.labels} maxAt={item.chart.maxAt} color="yellow"/>
-        </div>
-
-    ));
-
-
-
-
-    return (
-        <div className="sensor-list-component">
-            {/* <SensorChart title="Sensor 3" label="Loudness" data={data3} labels={labels3} color="yellow"/> */}
-            <div>
-                <h5>Sensor List</h5>
-            </div>
-            <div className="sensor-list">{renderSensors}</div>
-        </div>
-
-    )
+    
+        )
+    }
+    
 
 }
 

@@ -11,9 +11,7 @@ class Viewer extends Component {
 
     render(){
         return(
-            <div id="forgeViewer" >
-                {/* <div style={{ position: "absolute", width: "100%", height: "100%" }} id="forgeViewer" /> */}
-                {/* <div id="forgeViewer" /> */}
+            <div id="forgeViewer">
             </div>
            
         )
